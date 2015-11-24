@@ -1,0 +1,224 @@
+﻿<Controls:MetroWindow x:Class="NuxeoDotNetBrowser.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NuxeoDotNetBrowser"
+        xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+        xmlns:commands="clr-namespace:NuxeoDotNetBrowser"
+        xmlns:diagnostics="clr-namespace:System.Diagnostics;assembly=WindowsBase"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="Nuxeo Browser" Height="350" Width="555"
+        BorderThickness="0" GlowBrush="Black">
+
+    <Controls:MetroWindow.Resources>
+        <dialogs:CustomDialog x:Key="StartTaskWithDialog" Title="Start Parallel Review">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <TextBlock Text="Select participants:"
+                           Grid.Row="0"
+                           Margin="0,20,0,5" />
+                <TextBox x:Name="SearchParticipants"
+                         Controls:TextBoxHelper.Watermark="Search users"
+                         Controls:TextBoxHelper.ClearTextButton="True"
+                         TextChanged="SearchParticipants_TextChanged"
+                         Grid.Row="1"
+                         Margin="0,5" />
+                <ListView ItemsSource="{Binding}"
+                          BorderThickness="1"
+                          Grid.Row="2"
+                          Margin="0,5"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Focusable" Value="false" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <CheckBox x:Name="UserCheckbox" IsChecked="{Binding IsChecked}" />
+                                <TextBlock Text="{Binding Username}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            Grid.Row="3">
+                    <Button x:Name="StartTask"
+                            Content="Start"
+                            Click="StartTask_Click"
+                            Background="{DynamicResource AccentColorBrush}"
+                            Padding="24,8" Margin="0,0,10,25" />
+                    <Button x:Name="CancelTask"
+                            Content="Cancel"
+                            Click="CancelTask_Click"
+                            Padding="24,8"
+                            Margin="0,0,0,25" />
+                </StackPanel>
+            </Grid>
+        </dialogs:CustomDialog>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <RoutedUICommand x:Key="UploadFile" Text="Upload File" />
+        <RoutedUICommand x:Key="CreateDir" Text="Create Directory" />
+        <RoutedUICommand x:Key="Refresh" Text="Update View" />
+        <RoutedUICommand x:Key="Back" Text="Back" />
+        <RoutedUICommand x:Key="UpdateServer" Text="Update Server Info" />
+        <RoutedUICommand x:Key="UpdateAuth" Text="Update Authentication Info" />
+        <local:BrushColorConverter x:Key="ColorConverter" />
+    </Controls:MetroWindow.Resources>
+
+    <Controls:MetroWindow.CommandBindings>
+        <CommandBinding Command="{StaticResource UploadFile}"
+                    Executed="UploadFileCommand" />
+        <CommandBinding Command="{StaticResource CreateDir}"
+                    Executed="CreateDirCommand" />
+        <CommandBinding Command="{StaticResource Refresh}"
+                    Executed="RefreshCommand" />
+        <CommandBinding Command="{StaticResource Back}"
+                    Executed="BackCommand" />
+        <CommandBinding Command="{StaticResource UpdateServer}"
+                    Executed="UpdateServerCommand" />
+        <CommandBinding Command="{StaticResource UpdateAuth}"
+                    Executed="UpdateAuthCommand" />
+    </Controls:MetroWindow.CommandBindings>
+
+    <Controls:MetroWindow.InputBindings>
+        <KeyBinding Key="U" Modifiers="Ctrl" Command="{StaticResource UploadFile}" />
+        <KeyBinding Key="D" Modifiers="Ctrl" Command="{StaticResource CreateDir}" />
+        <KeyBinding Key="R" Modifiers="Ctrl" Command="{StaticResource Refresh}" />
+        <KeyBinding Key="S" Modifiers="Ctrl" Command="{StaticResource UpdateServer}" />
+        <KeyBinding Key="U" Modifiers="Ctrl" Command="{StaticResource UpdateAuth}" />
+        <KeyBinding Key="Backspace" Command="{StaticResource Back}" />
+    </Controls:MetroWindow.InputBindings>
+
+    <Grid>
+        <Grid Height="43" VerticalAlignment="Top" Background="{DynamicResource AccentColorBrush}">
+            <TextBox x:Name="pathInput" Height="23" Margin="116,10,134,0" TextWrapping="Wrap" VerticalAlignment="Top"
+                     Controls:TextBoxHelper.Watermark="Type in a document path" Text="/"
+                     KeyUp="pathInput_KeyUp" />
+            <Button x:Name="refreshButton"
+                    Command="{StaticResource Refresh}"
+                    ToolTip="Refresh (Ctrl + R)"
+                    HorizontalAlignment="Right"
+                    Width="26" Height="26"
+                    BorderBrush="Transparent"
+                    Background="Transparent"
+                    Foreground="White"
+                    FontWeight="Black"
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Center" Margin="0,10,103,7">
+                <Image Source="Icons\Refresh.png" Stretch="Uniform" />
+            </Button>
+            <Button x:Name="backButton"
+                    Command="{StaticResource Back}"
+                    ToolTip="Back (Backspace)"
+                    HorizontalAlignment="Right"
+                    Width="26" Height="26"
+                    BorderBrush="Transparent"
+                    Background="Transparent"
+                    Foreground="White"
+                    FontWeight="Black"
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Center" Margin="0,10,72,7">
+                <Image Source="Icons\Back.png" Stretch="Uniform" />
+            </Button>
+            <Button x:Name="createDirButton"
+                    Command="{StaticResource CreateDir}"
+                    ToolTip="Create a directory (Ctrl + D)"
+                    HorizontalAlignment="Right"
+                    Width="26" Height="26"
+                    BorderBrush="Transparent"
+                    Background="Transparent"
+                    Foreground="White"
+                    FontWeight="Black"
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Center" Margin="0,10,41,7">
+                <Image Source="Icons\add_folder.png" Stretch="Uniform" />
+            </Button>
+            <Button x:Name="uploadButton"
+                    Command="{StaticResource UploadFile}"
+                    ToolTip="Upload a file (Ctrl + U)"
+                    HorizontalAlignment="Right"
+                    Width="26" Height="26"
+                    BorderBrush="Transparent"
+                    Background="Transparent"
+                    Foreground="White"
+                    FontWeight="Black"
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Center" Margin="0,10,10,7">
+                <Image Source="Icons\add_file.png" Stretch="Uniform" />
+            </Button>
+            <Border BorderBrush="Black" BorderThickness="0" Height="23" Margin="10,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="101">
+                <TextBlock x:Name="pathLabel" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Document Path:" VerticalAlignment="Center" FontSize="14" Foreground="White" />
+            </Border>
+        </Grid>
+        <Grid Margin="0,43,0,0">
+            <DockPanel>
+                <ListView x:Name="DocumentListView"
+                          ItemsSource="{Binding}"
+                          Height="Auto"
+                          Background="Transparent"
+                          BorderThickness="0"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                          MouseDoubleClick="DocumentListView_MouseDoubleClick"
+                          KeyUp="DocumentListView_KeyUp">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel IsItemsHost="True" Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Vertical" Width="128" Height="128" VerticalAlignment="Center" Margin="5,3">
+                                <StackPanel.ContextMenu>
+                                    <ContextMenu x:Name="ListViewContextMenu">
+                                        <MenuItem Header="Open" Click="OpenDir_Click" Visibility="{Binding IsFolder, Converter={StaticResource BoolToVis}}" />
+                                        <MenuItem Header="Delete" Click="DeleteDocument_Click" />
+                                        <Separator Visibility="{Binding IsFile, Converter={StaticResource BoolToVis}}" />
+                                        <MenuItem x:Name="StartTaskMenuItem" Header="Task" Visibility="{Binding IsFile, Converter={StaticResource BoolToVis}}">
+                                            <MenuItem x:Name="UsersContextMenu"
+                                                      Header="Parallel Review" Click="StartParallelReview_Click" />
+                                        </MenuItem>
+                                    </ContextMenu>
+                                </StackPanel.ContextMenu>
+                                <Grid Height="84" Width="128">
+                                    <Image Source="{Binding Thumbnail}" MaxHeight="84" MaxWidth="128" Margin="5,0" HorizontalAlignment="Center" Stretch="Uniform" />
+                                    <Border BorderThickness="1" CornerRadius="5" BorderBrush="Black" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                            Background="{Binding Document.State, Converter={StaticResource ColorConverter}}"
+                                            Visibility="{Binding IsFile, Converter={StaticResource BoolToVis}}">
+                                        <TextBlock HorizontalAlignment="Center" Margin="6,2" MaxWidth="128" TextWrapping="Wrap"
+                                                   Text="{Binding Document.State}" />
+                                    </Border>
+                                </Grid>
+                                <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" Margin="0,5,0,0" FontWeight="Bold" MaxWidth="128" TextWrapping="WrapWithOverflow" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </DockPanel>
+            <Controls:ProgressRing Name="progressRing" IsActive="False" />
+        </Grid>
+    </Grid>
+
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button Content="Server"
+                    ToolTip="Update server address (Ctrl + S)"
+                    Command="{StaticResource UpdateServer}" />
+            <Button Content="Authentication"
+                    ToolTip="Update user authenticaion (Ctrl + U)"
+                    Command="{StaticResource UpdateAuth}" />
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+</Controls:MetroWindow>

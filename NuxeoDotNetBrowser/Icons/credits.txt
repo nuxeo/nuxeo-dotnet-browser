@@ -1,0 +1,6 @@
+file: https://www.iconfinder.com/icons/290138/document_extension_file_format_paper_icon
+folder: https://www.iconfinder.com/icons/290140/document_documents_file_folder_icon
+back: https://www.iconfinder.com/icons/326518/arrow_back_icon
+refresh: https://www.iconfinder.com/icons/326679/refresh_reload_icon
+add_file: https://www.iconfinder.com/icons/326640/file_upload_icon
+add_folder: https://www.iconfinder.com/icons/326647/folder_icon
