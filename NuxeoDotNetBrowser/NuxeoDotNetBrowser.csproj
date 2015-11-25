@@ -43,7 +43,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="NuxeoClient, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NuxeoClient.1.0.0-beta-01230\lib\net45\NuxeoClient.dll</HintPath>
+      <HintPath>..\packages\NuxeoClient.1.0.0-beta-01251\lib\net45\NuxeoClient.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
