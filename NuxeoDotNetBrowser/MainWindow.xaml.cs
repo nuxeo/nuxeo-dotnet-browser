@@ -289,7 +289,11 @@ namespace NuxeoDotNetBrowser
 
         private async Task OpenDir(Document document)
         {
-            if (document != null && document.Type == "Folder")
+            if (document != null && (document.Type == "Folder" ||
+                                     document.Type == "Domain" ||
+                                     document.Type == "SectionRoot" ||
+                                     document.Type == "TemplateRoot" ||
+                                     document.Type == "WorkspaceRoot"))
             {
                 StartProgressRing();
                 pathInput.Text = document.Path;
