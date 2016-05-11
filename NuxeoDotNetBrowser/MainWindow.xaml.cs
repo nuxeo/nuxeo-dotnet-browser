@@ -118,9 +118,9 @@ namespace NuxeoDotNetBrowser
         {
             Exception e = exception;
             while (e.InnerException != null) e = e.InnerException;
-            if (e is ServerException)
+            if (e is ServerErrorException)
             {
-                ServerException serv = (ServerException)e;
+                ServerErrorException serv = (ServerErrorException)e;
                 await this.ShowMessageAsync("NuxeoClient error", message + Environment.NewLine + "Status code:" + serv.StatusCode + Environment.NewLine + e.Message, MessageDialogStyle.Affirmative);
             }
             else
@@ -144,7 +144,7 @@ namespace NuxeoDotNetBrowser
 
             try
             {
-                EntityList ents = (EntityList)await client.Operation("UserGroup.Suggestion").SetParameter("searchType", "USER_TYPE").Execute();
+                EntityList<Entity> ents = (EntityList<Entity>)await client.Operation("UserGroup.Suggestion").SetParameter("searchType", "USER_TYPE").Execute();
                 userList.Clear();
                 foreach (Entity entity in ents)
                 {
